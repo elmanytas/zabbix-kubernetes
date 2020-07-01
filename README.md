@@ -1,6 +1,6 @@
 # zabbix for kubernetes
 
-Zabbix is a monitoring system that allows to do traditional checks, protocol checks and functional application checks easyly.
+Zabbix is a monitoring system that allows to do traditional checks, protocol checks and functional application checks easily.
 
 ## helm chart
 

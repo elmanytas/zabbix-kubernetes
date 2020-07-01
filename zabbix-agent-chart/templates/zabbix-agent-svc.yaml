@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "zabbix-agent.fullname" . }}
+  labels:
+    app: "{{ template "zabbix-agent.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+  annotations:
+{{- if .Values.service.zabbix_agent.annotations }}
+{{ toYaml .Values.service.zabbix_agent.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.service.zabbix_agent.type }}
+  {{- if eq .Values.service.zabbix_agent.type "LoadBalancer" }}
+  externalTrafficPolicy: {{ .Values.service.zabbix_agent.externalTrafficPolicy | quote }}
+  {{- end }}
+  ports:
+    - name:
+      port: {{ .Values.service.zabbix_agent.port }}
+      targetPort: http
+      nodePort: null
+  selector:
+    app: "{{ template "zabbix-agent.fullname" . }}"

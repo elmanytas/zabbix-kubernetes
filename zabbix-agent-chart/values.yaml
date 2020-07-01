@@ -1,0 +1,139 @@
+## Zabbix agent image version
+## ref: https://hub.docker.com/r/zabbix/
+##
+image:
+  zabbix_agent:
+    ## Zabbix agent image version
+    ## ref: https://hub.docker.com/r/zabbix/zabbix-agent/tags
+    ##
+    registry: docker.io
+    repository: zabbix/zabbix-agent
+    tag: ubuntu-4.4-latest
+    ## Specify a imagePullPolicy
+    ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+    ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+    ##
+    pullPolicy: IfNotPresent
+    ## Optionally specify an array of imagePullSecrets.
+    ## Secrets must be manually created in the namespace.
+    ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+    ##
+    # pullSecrets:
+    #   - myRegistryKeySecretName
+
+## String to partially override fullname templates (will maintain the release name)
+##
+nameOverride: {}
+#   chart:
+#   zabbix_server_mysql:
+#   zabbix_agent:
+
+
+## String to fully override fullname templates
+##
+fullnameOverride: {}
+#   chart:
+#   zabbix_server_mysql:
+#   zabbix_agent:
+
+
+## Set up update strategy for zabbix installation. Set to Recreate if you use persistent volume that cannot be mounted by more than one pods to makesure the pods is destroyed first.
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#strategy
+## Example:
+## updateStrategy:
+##  type: RollingUpdate
+##  rollingUpdate:
+##    maxSurge: 25%
+##    maxUnavailable: 25%
+updateStrategy:
+  type: RollingUpdate
+
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
+## Using pasive monitorization, you can scale this to any number.
+## If you uses active monitorization, set this to 1 or you will receive duplicated data
+replicaCount: 1
+
+## Kubernetes configuration
+## Use LoadBalancer or ClusterIP
+##
+service:
+  zabbix_agent:
+    type: ClusterIP
+    # TCP
+    port: 10050
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  ## zabbix data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  ##
+  userscripts:
+    enabled: false
+    accessMode: ReadWriteOnce
+    size: 200Mi
+    claimName: userscripts
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 300m
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
+
+## Pod annotations
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
+
+zabbix_vars:
+  php_tz: Europe/Riga
+  zbx_server_name: zabbix
+  zbx_timeout: 3
+  zbx_unsafeuserparameters: "0"
+  zbx_enableremotecommands: "0"
+  zbx_logremotecommands: "0"
+
+
+## Configure extra options for liveness and readiness probes
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+zabbix_agent_probes:
+  livenessProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1
+  readinessProbe:
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1

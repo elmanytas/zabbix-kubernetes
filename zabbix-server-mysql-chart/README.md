@@ -94,7 +94,6 @@ The following table lists the configurable parameters of the WordPress chart and
 | `zabbix_server_mysql.readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe                     | `6`                                                          |
 | `zabbix_server_mysql.readinessProbe.successThreshold`    | Minimum consecutive successes for the probe                    | `1`                                                          |
 | `ingress.enabled`                         | Enable ingress controller resource                                            | `false`                                                      |
-| `ingress.certManager`                     | Add annotations for cert-manager                                              | `false`                                                      |
 | `ingress.hostname`                        | Default host for the ingress resource                                         | `zabbix.local`                                               |
 | `ingress.annotations`                     | Ingress annotations                                                           | `[]`                                                         |
 | `ingress.hosts[0].name`                   | Hostname to your zabbix installation                                          | `zabbix.local`                                               |

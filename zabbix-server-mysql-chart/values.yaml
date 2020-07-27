@@ -307,13 +307,13 @@ zabbix_server_mysql_probes:
     initialDelaySeconds: 60
     periodSeconds: 10
     timeoutSeconds: 5
-    failureThreshold: 6
+    failureThreshold: 60
     successThreshold: 1
   readinessProbe:
     initialDelaySeconds: 10
     periodSeconds: 10
     timeoutSeconds: 5
-    failureThreshold: 6
+    failureThreshold: 60
     successThreshold: 1
 zabbix_agent_probes:
   livenessProbe:

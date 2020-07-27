@@ -358,7 +358,7 @@ ingress:
   ##tls: false
   ## The tls configuration for the ingress
   ## see: https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
-  tls: {}
+  tls: []
   ## tls:
   ## - hosts:
   ##     - zabbix.local

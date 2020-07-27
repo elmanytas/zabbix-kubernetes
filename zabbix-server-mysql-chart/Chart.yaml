@@ -1,7 +1,7 @@
 apiVersion: v1
 name: zabbix-server-mysql
-version: 0.0.3
-appVersion: 0.0.3
+version: 0.0.4
+appVersion: 0.0.4
 description: Zabbix monitoring server
 icon: https://cdn.lo4d.com/t/icon/70/zabbix.png
 keywords:

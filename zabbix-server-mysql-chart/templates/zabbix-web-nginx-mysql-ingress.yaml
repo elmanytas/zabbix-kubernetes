@@ -23,15 +23,6 @@ spec:
           serviceName: "{{ template "zabbix-web-nginx-mysql.fullname" $ }}"
           servicePort: http
   {{- end }}
-  {{- range .Values.ingress.hosts }}
-  - host: {{ .name }}
-    http:
-      paths:
-      - path: {{ default "/" .path }}
-        backend:
-          serviceName: "{{ template "wordpress.fullname" $ }}"
-          servicePort: http
-  {{- end }}
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}
 {{- end }}

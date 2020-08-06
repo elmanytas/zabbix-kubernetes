@@ -1,0 +1,44 @@
+
+You can login to the admin panel using the following initial credentials (if
+not changed yet):
+
+        Username: Admin
+        Password: zabbix
+
+        !!! Please change the password after 1st login !!!
+
+{{- if .Values.ingress.enabled }}
+
+You can login to the admin panel at
+
+        http://{{ .Values.ingress.hostname }}
+
+{{- else }}
+{{- $port := .Values.zabbix_web_nginx_mysql.port | toString }}
+
+1. Get the Zabbix URL by running these commands:
+
+{{- if contains "NodePort" .Values.service.zabbix_web_nginx_mysql.type }}
+
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "zabbix-web-nginx-mysql.fullname" . }})
+   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+   echo "Zabbix URL: http://$NODE_IP:$NODE_PORT/"
+
+{{- else if contains "LoadBalancer" .Values.service.zabbix_web_nginx_mysql.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "zabbix-web-nginx-mysql.fullname" . }}'
+
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "zabbix-web-nginx-mysql.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+   echo "Zabbix URL: http://$SERVICE_IP{{- if ne $port "80" }}:{{ .Values.service.zabbix_web_nginx_mysql.port }}{{ end }}/"
+
+{{- else if contains "ClusterIP"  .Values.service.zabbix_web_nginx_mysql.type }}
+
+   kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ template "zabbix-web-nginx-mysql.fullname" . }} {{ .Values.service.zabbix_web_nginx_mysql.port }}:{{ .Values.service.zabbix_web_nginx_mysql.port }} &
+   echo "Zabbix URL: http://127.0.0.1{{- if ne $port "80" }}:{{ .Values.service.zabbix_web_nginx_mysql.port }}{{ end }}//"
+
+{{- end }}
+{{- end }}
+
+First time zabbix is deployed could take a long creating database scheme so
+please, be patient.

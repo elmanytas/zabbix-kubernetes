@@ -7,7 +7,7 @@ Zabbix can use postgresql or mysql. This chart implementes the mysql flavor of z
 ## TL;DR;
 
 ```console
-$ helm upgrade --install zabbix-mysql .
+$ helm upgrade --install fermosit/zabbix-server-mysql
 ```
 
 ## Introduction
@@ -16,6 +16,9 @@ This chart bootstraps a [Zabbix](https://www.zabbix.com/documentation/4.4/manual
 
 It also uses the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the Zabbix application.
 
+Source code:  https://github.com/elmanytas/zabbix-kubernetes/zabbix-server-mysql-chart
+
+Report bugs here: https://github.com/elmanytas/zabbix-kubernetes/issues
 
 ## Prerequisites
 
@@ -28,7 +31,7 @@ It also uses the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tr
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release incubator/zabbix-mysql
+$ helm install my-release fermosit/zabbix-server-mysql
 ```
 
 The command deploys Zabbix on the Kubernetes cluster in the default configuration. The [Parameters](#parameters) section lists the parameters that can be configured during installation.
@@ -40,7 +43,7 @@ The command deploys Zabbix on the Kubernetes cluster in the default configuratio
 To uninstall/delete the `my-release` deployment:
 
 ```console
-$ helm delete my-release
+$ helm delete zabbix
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -96,8 +99,6 @@ The following table lists the configurable parameters of the WordPress chart and
 | `ingress.enabled`                         | Enable ingress controller resource                                            | `false`                                                      |
 | `ingress.hostname`                        | Default host for the ingress resource                                         | `zabbix.local`                                               |
 | `ingress.annotations`                     | Ingress annotations                                                           | `[]`                                                         |
-| `ingress.hosts[0].name`                   | Hostname to your zabbix installation                                          | `zabbix.local`                                               |
-| `ingress.hosts[0].path`                   | Path within the url structure                                                 | `/`                                                          |
 | `ingress.tls[0].hosts[0]`                 | TLS hosts                                                                     | `zabbix.local`                                               |
 | `ingress.tls[0].secretName`               | TLS Secret (certificates)                                                     | `zabbix.local-tls`                                           |
 | `ingress.secrets[0].name`                 | TLS Secret Name                                                               | `nil`                                                        |
@@ -158,9 +159,13 @@ The following table lists the configurable parameters of the WordPress chart and
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
-  --set zabbix_vars.zbx_server_name=zabbix \
-    incubator/zabbix-mysql
+helm upgrade --install zabbix fermosit/zabbix-server-mysql \
+  --namespace zabbix \
+  --set ingress.enabled=true \
+  --set ingress.hostname=zabbix.example.org \
+  --set ingress.annotations."cert-manager\.io/cluster-issuer=letsencrypt-prod" \
+  --set ingress.tls[0].hosts[0]=zabbix.example.org \
+  --set ingress.tls[0].secretName=zabbix-example-org-tls
 ```
 
 The above command sets the visible Zabbix installation name in right top corner of the web interface.
@@ -190,3 +195,15 @@ $ helm install --name my-release -f values.yaml incubator/zabbix-mysql
 This chart provides support for ingress resources. If you have an ingress controller installed on your cluster, such as [nginx-ingress](https://kubeapps.com/charts/stable/nginx-ingress) or [traefik](https://kubeapps.com/charts/stable/traefik) you can utilize the ingress controller to serve your WordPress application.
 
 To enable ingress integration, please set `ingress.enabled` to `true`
+
+A tipical deployment with https could be done like this:
+```
+helm upgrade --install zabbix fermosit/zabbix-server-mysql \
+server-mysql-chart \
+  --namespace zabbix \
+  --set ingress.enabled=true \
+  --set ingress.hostname=zabbix.example.org  \
+  --set ingress.annotations."cert-manager\.io/cluster-issuer=letsencrypt-prod" \
+  --set ingress.tls[0].hosts[0]=zabbix.example.org \
+  --set ingress.tls[0].secretName=zabbix-example-org-es-tls
+```

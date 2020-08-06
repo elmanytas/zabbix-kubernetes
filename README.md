@@ -8,3 +8,15 @@ Zabbix images are available and provided by zabbix but there is not any official
 
 You can use the chart in zabbix-server-mysql to deploy it.
 
+## TODO: access between clusters with proxy
+
+Other problem is to use Zabbix in a Kubernetes cluster to monitorice using an agent in other cluster because zabbix use its own protocol in tcp ports 10050 (pasive) and 10051 (active).
+
+Standard ingress only provides http and https so I can use this code:
+https://bitbucket.org/sivann/zabbix_http_gateway/src/master/
+
+It allows using a http proxy.
+
+zabbix-agent-chart, zabbix-http-gateway-agent-docker and zabbix-http-gateway-server-docker will implement this feature.
+
+

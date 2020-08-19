@@ -7,6 +7,7 @@ Zabbix can use postgresql or mysql. This chart implementes the mysql flavor of z
 ## TL;DR;
 
 ```console
+$ helm repo add fermosit https://harbor.fermosit.es/chartrepo/library
 $ helm upgrade --install fermosit/zabbix-server-mysql
 ```
 
@@ -31,6 +32,7 @@ Report bugs here: https://github.com/elmanytas/zabbix-kubernetes/issues
 To install the chart with the release name `my-release`:
 
 ```console
+$ helm repo add fermosit https://harbor.fermosit.es/chartrepo/library
 $ helm install my-release fermosit/zabbix-server-mysql
 ```
 
@@ -159,6 +161,7 @@ The following table lists the configurable parameters of the WordPress chart and
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
+helm repo add fermosit https://harbor.fermosit.es/chartrepo/library
 helm upgrade --install zabbix fermosit/zabbix-server-mysql \
   --namespace zabbix \
   --set ingress.enabled=true \
@@ -173,7 +176,7 @@ The above command sets the visible Zabbix installation name in right top corner 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/zabbix-mysql
+$ helm install --name my-release -f values.yaml fermosit/zabbix-server-mysql
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

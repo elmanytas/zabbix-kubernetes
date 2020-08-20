@@ -21,7 +21,7 @@ spec:
       - path: /
         backend:
           serviceName: "{{ template "zabbix-web-nginx-mysql.fullname" $ }}"
-          servicePort: http
+          servicePort: 80
   {{- end }}
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}

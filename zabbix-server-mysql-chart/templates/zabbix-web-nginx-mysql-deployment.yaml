@@ -50,8 +50,10 @@ spec:
               key: mariadb-password
         - name: ZBX_SERVER_HOST
           value: {{ template "zabbix-server-mysql.fullname" . }}
-        - name: ZBX_SERVER_NAME
-          value: {{ .Values.zabbix_vars.zbx_server_name }}
+        {{ range $key, $val := .Values.zabbix_vars }}
+        - name: {{ $key | upper }}
+          value: "{{ $val }}"
+        {{ end }}
         ports:
         - name: http
           containerPort: 8080

@@ -35,18 +35,12 @@ spec:
         image: {{ template "zabbix_agent.image" . }}
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
-        - name: ZBX_SERVER_NAME
-          value: "{{ .Values.zabbix_vars.zbx_server_name }}"
         - name: ZBX_SERVER_HOST
           value: 127.0.0.1
-        - name: ZBX_TIMEOUT
-          value: "{{ .Values.zabbix_vars.zbx_timeout }}"
-        - name: ZBX_UNSAFEUSERPARAMETERS
-          value: "{{ .Values.zabbix_vars.zbx_unsafeuserparameters }}"
-        - name: ZBX_ENABLEREMOTECOMMANDS
-          value: "{{ .Values.zabbix_vars.zbx_enableremotecommands }}"
-        - name: ZBX_LOGREMOTECOMMANDS
-          value: "{{ .Values.zabbix_vars.zbx_logremotecommands }}"
+        {{ range $key, $val := .Values.zabbix_vars }}
+        - name: {{ $key | upper }}
+          value: "{{ $val }}"
+        {{ end }}
         ports:
         - containerPort: 10050
           name: agent

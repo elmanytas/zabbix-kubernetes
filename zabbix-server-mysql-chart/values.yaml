@@ -105,7 +105,7 @@ mariadb:
 
   ## Image version
   image:
-    tag: 10.4-debian-10
+    tag: 10.5-debian-10
 
   ## Disable MariaDB replication
   replication:
@@ -291,6 +291,7 @@ zabbix_vars:
   zbx_unsafeuserparameters: "0"
   zbx_enableremotecommands: "0"
   zbx_logremotecommands: "0"
+  zbx_cachesize: "8M"
 
 ## Configure extra options for liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)

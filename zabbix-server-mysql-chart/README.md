@@ -157,6 +157,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `affinity`                                | Map of node/pod affinities                                                    | `{}`                                                         |
 | `podAnnotations`                          | Pod annotations                                                               | `{}`                                                         |
 | `updateStrategy`                          | Set up update strategy                                                        | `RollingUpdate` for web and `Recreate` for server            |
+| `zabbix_vars`                             | Variables in lowercase passed to deployments in uppercase                     | Default zabbix variables                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -182,6 +183,14 @@ $ helm install --name my-release -f values.yaml fermosit/zabbix-server-mysql
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ## Configuration and installation details
+
+### Zabbix variables
+
+Zabbix variables are defined in `zabbix_vars` dictionary in lowercase.
+
+All variables are converted to uppercase in deployment time.
+
+Take a look to the [repository readme](https://hub.docker.com/r/zabbix/zabbix-server-mysql) to configure all variables you need.
 
 ### Production configuration
 

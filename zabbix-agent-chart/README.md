@@ -77,7 +77,6 @@ The following table lists the configurable parameters of the Zabbix Agent chart 
 | `podAnnotations`                     | Pod annotations                                                | `{}`                                                    |
 | `updateStrategy`                     | Set up update strategy                                         | `RollingUpdate` for web and `Recreate` for server       |
 | `zabbix_vars`                        | Variables in lowercase passed to deployments in uppercase      | Default zabbix variables                                |
-| `zabbix_server`                      | 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -85,8 +84,8 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 helm repo add fermosit https://harbor.fermosit.es/chartrepo/library
 helm upgrade --install zabbix-agent fermosit/zabbix-agent \
   --namespace zabbix \
-  --set zabbix_vars.server=
-  --set zabbix_vars.
+  --set zabbix_vars.zbx_activeservers=zabbix.example.com \
+  --set zabbix_vars.zbx_hostname=agent.example.com
 ```
 
 The above command sets the visible Zabbix installation name in right top corner of the web interface.
@@ -94,7 +93,7 @@ The above command sets the visible Zabbix installation name in right top corner 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml fermosit/zabbix-server-mysql
+$ helm install --name my-release -f values.yaml fermosit/zabbix-agent
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -107,7 +106,7 @@ Zabbix variables are defined in `zabbix_vars` dictionary in lowercase.
 
 All variables are converted to uppercase in deployment time.
 
-Take a look to the [repository readme](https://hub.docker.com/r/zabbix/zabbix-server-mysql) to configure all variables you need.
+Take a look to the [repository readme](https://hub.docker.com/r/zabbix/zabbix-agent) to configure all variables you need.
 
 ### Active/pasive checks
 

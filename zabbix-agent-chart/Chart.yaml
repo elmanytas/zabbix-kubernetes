@@ -9,7 +9,6 @@ keywords:
 - zabbix-agent
 - monitoring
 - application
-- php
 home: https://www.zabbix.com/
 sources:
 - https://github.com/elmanytas/zabbix-kubernetes

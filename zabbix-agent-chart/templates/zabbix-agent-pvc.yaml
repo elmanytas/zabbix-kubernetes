@@ -1,0 +1,19 @@
+{{- if .Values.persistence.userscripts.enabled }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.persistence.userscripts.claimName }}
+  labels:
+    app: "{{ template "zabbix-server-mysql.fullname" . }}"
+    chart: "{{ template "zabbix.chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.userscripts.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.userscripts.size | quote }}
+  {{ include "zabbix.storageClass" . }}
+{{- end -}}

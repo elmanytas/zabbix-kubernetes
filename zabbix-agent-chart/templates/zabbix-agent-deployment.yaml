@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: "{{ template "fullname" . }}"
+    chart: "{{ template "chart" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  selector:
+    matchLabels:
+      app: "{{ template "fullname" . }}"
+      release: {{ .Release.Name | quote }}
+  {{- if .Values.updateStrategy }}
+  strategy: {{ toYaml .Values.updateStrategy | nindent 4 }}
+  {{- end }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "{{ template "fullname" . }}"
+        chart: "{{ template "chart" . }}"
+        release: {{ .Release.Name | quote }}
+{{- if or .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+{{- end }}
+    spec:
+      {{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+      {{- end }}
+      containers:
+      - name: zabbix-agent
+        image: {{ template "image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        env:
+        {{ range $key, $val := .Values.zabbix_vars }}
+        - name: {{ $key | upper }}
+          value: "{{ $val }}"
+        {{ end }}
+        ports:
+        - containerPort: 10050
+          name: agent
+          protocol: TCP
+        livenessProbe:
+          tcpSocket:
+            port: 10050
+{{ toYaml .Values.livenessProbe | indent 10 }}
+        readinessProbe:
+          tcpSocket:
+            port: 10050
+{{ toYaml .Values.readinessProbe | indent 10 }}
+        volumeMounts:
+        - mountPath: /var/lib/zabbix/userscripts
+          name: userscripts
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      volumes:
+      - name: userscripts
+      {{- if .Values.persistence.userscripts.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.userscripts.claimName }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      nodeSelector:
+    {{- if .Values.nodeSelector }}
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end -}}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

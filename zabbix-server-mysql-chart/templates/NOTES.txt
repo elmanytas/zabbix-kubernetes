@@ -14,7 +14,7 @@ You can login to the admin panel at
         http://{{ .Values.ingress.hostname }}
 
 {{- else }}
-{{- $port := .Values.zabbix_web_nginx_mysql.port | toString }}
+{{- $port := .Values.service.zabbix_web_nginx_mysql.port | toString }}
 
 1. Get the Zabbix URL by running these commands:
 

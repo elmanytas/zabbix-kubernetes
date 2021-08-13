@@ -80,6 +80,10 @@ spec:
           value: {{ .Values.zabbix_vars.zbx_server_name }}
         - name: ZBX_TIMEOUT
           value: "{{ .Values.zabbix_vars.zbx_timeout }}"
+        {{ range $key, $val := .Values.zabbix_vars }}
+        - name: {{ $key | upper }}
+          value: "{{ $val }}"
+        {{ end }}
         ports:
         - name: trapper
           containerPort: 10051

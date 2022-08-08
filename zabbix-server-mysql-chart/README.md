@@ -23,8 +23,8 @@ Report bugs here: https://github.com/elmanytas/zabbix-kubernetes/issues
 
 ## Prerequisites
 
-- Kubernetes 1.12+
-- Helm 2.11+ or Helm 3.0-beta4+
+- Kubernetes 1.19+
+- Helm 3.0+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -219,3 +219,12 @@ server-mysql-chart \
   --set ingress.tls[0].hosts[0]=zabbix.example.org \
   --set ingress.tls[0].secretName=zabbix-example-org-es-tls
 ```
+
+### Migration from 0.1.x version of this chart
+
+The mariadb dependency has changed to bitnami chart. Mariadb statefulset cannot be updated so run before upgrade to 1.x.x version of this chart:
+```
+kubectl delete statefulset zabbix-mariadb
+```
+
+Then, upgrade chart as usual and mariadb statefulset will be recreated.

@@ -68,18 +68,14 @@ spec:
         - name: DB_SERVER_PORT
           value: "3306"
         - name: MYSQL_DATABASE
-          value: {{ .Values.mariadb.db.name | quote }}
+          value: {{ .Values.mariadb.auth.database | quote }}
         - name: MYSQL_USER
-          value: {{ .Values.mariadb.db.user | quote }}
+          value: {{ .Values.mariadb.auth.username | quote }}
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mariadb.fullname" . }}
               key: mariadb-password
-        - name: ZBX_SERVER_NAME
-          value: {{ .Values.zabbix_vars.zbx_server_name }}
-        - name: ZBX_TIMEOUT
-          value: "{{ .Values.zabbix_vars.zbx_timeout }}"
         {{ range $key, $val := .Values.zabbix_vars }}
         - name: {{ $key | upper }}
           value: "{{ $val }}"

@@ -78,8 +78,6 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-
-
 {{/*
 Return  the proper Storage Class
 */}}
@@ -112,16 +110,5 @@ but Helm 2.9 and 2.10 does not support it, so we need to implement this if-else 
             {{- printf "storageClassName: %s" .Values.persistence.storageClass -}}
         {{- end -}}
     {{- end -}}
-{{- end -}}
-{{- end -}}
-
-{{/*
-Return the appropriate apiVersion for ingress.
-*/}}
-{{- define "zabbix-web.ingress.apiVersion" -}}
-{{- if semverCompare "<1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-{{- print "extensions/v1beta1" -}}
-{{- else -}}
-{{- print "networking.k8s.io/v1beta1" -}}
 {{- end -}}
 {{- end -}}

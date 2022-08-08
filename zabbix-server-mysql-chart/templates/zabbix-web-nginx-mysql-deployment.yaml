@@ -40,9 +40,9 @@ spec:
         - name: DB_SERVER_PORT
           value: "3306"
         - name: MYSQL_DATABASE
-          value: {{ .Values.mariadb.db.name | quote }}
+          value: {{ .Values.mariadb.auth.database | quote }}
         - name: MYSQL_USER
-          value: {{ .Values.mariadb.db.user | quote }}
+          value: {{ .Values.mariadb.auth.username | quote }}
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:

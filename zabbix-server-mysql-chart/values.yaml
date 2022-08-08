@@ -57,19 +57,16 @@ image:
     # pullSecrets:
     #   - myRegistryKeySecretName
 
-
-## String to partially override fullname templates (will maintain the release name)
+## Strings to partially override fullname templates (will maintain the release name)
 ##
 nameOverride: {}
-#   chart:
 #   zabbix_server_mysql:
 #   zabbix_web_nginx_mysql:
 
 
-## String to fully override fullname templates
+## Strings to fully override fullname templates
 ##
 fullnameOverride: {}
-#   chart:
 #   zabbix_server_mysql:
 #   zabbix_web_nginx_mysql:
 
@@ -102,33 +99,19 @@ replicaCount:
 ## https://github.com/helm/charts/blob/master/stable/mariadb/values.yaml
 ##
 mariadb:
-
-  ## Image version
-  image:
-    tag: 10.5-debian-10
-
-  ## Disable MariaDB replication
-  replication:
-    enabled: false
-
   ## Create a database and a database user
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
   ##
-  db:
-    name: zabbix
-    user: zabbix
+  auth:
     ## If the password is not specified, mariadb will generates a random password
     ##
     ## Fix password because mariadb chart under certain conditions changes it when upgrading
+    rootPassword: zabbix
+    database: zabbix
+    username: zabbix
     password: zabbix
 
-  ## MariaDB admin password
-  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
-  ##
-  rootUser:
-    password: zabbix
-
-  master:
+  primary:
     ## Enable persistence using Persistent Volume Claims
     ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
     ##
@@ -144,34 +127,6 @@ mariadb:
       # storageClass: "-"
       accessMode: ReadWriteOnce
       size: 8Gi
-
-    ## Database character-set-server=utf8 and collation-server=utf8_bin:
-    ## ref: http://www.zabbix.com/documentation/4.4/manual/installation/containers
-    ## ref: https://github.com/helm/charts/blob/master/stable/mariadb/values.yaml#L246
-    ##
-    config: |-
-      [mysqld]
-      skip-name-resolve
-      explicit_defaults_for_timestamp
-      basedir=/opt/bitnami/mariadb
-      port=3306
-      socket=/opt/bitnami/mariadb/tmp/mysql.sock
-      tmpdir=/opt/bitnami/mariadb/tmp
-      max_allowed_packet=16M
-      bind-address=0.0.0.0
-      pid-file=/opt/bitnami/mariadb/tmp/mysqld.pid
-      log-error=/opt/bitnami/mariadb/logs/mysqld.log
-      character-set-server=UTF8
-      collation-server=utf8_bin
-
-      [client]
-      port=3306
-      socket=/opt/bitnami/mariadb/tmp/mysql.sock
-      default-character-set=UTF8
-
-      [manager]
-      port=3306
-      socket=/opt/bitnami/mariadb/tmp/mysql.sock
 
 ## Kubernetes configuration
 ## Use LoadBalancer or ClusterIP

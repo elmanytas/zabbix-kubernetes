@@ -228,3 +228,5 @@ kubectl delete statefulset zabbix-mariadb
 ```
 
 Then, upgrade chart as usual and mariadb statefulset will be recreated.
+
+Take a look to the changes: https://github.com/elmanytas/zabbix-kubernetes/commit/75e229406086dda56a1c752b88f44662dbb07692

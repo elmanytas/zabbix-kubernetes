@@ -198,7 +198,7 @@ affinity: {}
 
 ## @param initContainers Add additional init containers for the zabbix-server-mysql pod
 ##
-## Example to allow zabbix user writing rights:
+## Example to allow zabbix ownership rights:
 ##
 ## initContainers:
 ## - name: fix-permissions
@@ -212,7 +212,9 @@ affinity: {}
 ##     - bash
 ##     - -c
 ##     - |
-##       chown -R zabbix:zabbix /zabbix-volume/*
+##       chown -R zabbix:zabbix /zabbix-volume
+##
+## Remember that the first time all directories does not exist so you could need to restart the pod to see the changes.
 ##
 ##
 ## Example to download static curl to userscripts directory where zabbix can run scripts that can be triggered by actions:

@@ -4,6 +4,12 @@
 
 Zabbix can use postgresql or mysql. This chart implementes the mysql flavor of zabbix.
 
+## WARNING!!!
+
+The version 3.0.0 breaks zabbix storage (if you use persistence.thing.enabled=true).
+
+In previous versions a volume by directory was created. Now only is created one volume and each directory in zabbix is a directory in the volume so you need to move all data from each volume to each directory in the new volume.
+
 ## TL;DR;
 
 ```console
@@ -108,53 +114,14 @@ The following table lists the configurable parameters of the Zabbix Server chart
 | `ingress.secrets[0].key`                  | TLS Secret Key                                                                | `nil`                                                        |
 | `schedulerName`                           | Name of the alternate scheduler                                               | `nil`                                                        |
 | `persistence.storageClass`                | PVC Storage  Class                                                            | `nil` (uses alpha storage class annotation)                  |
-| `persistence.alertscripts.enabled`        | Enable persistence using PVC                                                  | `false`                                                      |
-| `persistence.alertscripts.accessMode`     | PVC Access Mode                                                               | `ReadWriteOnce`                                              |
-| `persistence.alertscripts.size`           | PVC Storage Request                                                           | `100Mi`                                                      |
-| `persistence.alertscripts.claimName`      | PVC Storage Name                                                              | `alertscripts`                                               |
-| `persistence.externalscripts.enabled`     | Enable persistence using PVC                                                  | `false`                                                      |
-| `persistence.externalscripts.accessMode`  | PVC Access Mode                                                               | `ReadWriteOnce`                                              |
-| `persistence.externalscripts.size`        | PVC Storage Request                                                           | `100Mi`                                                      |
-| `persistence.externalscripts.claimName`   | PVC Storage Name                                                              | `alertscripts`                                               |
-| `persistence.enc.enabled`                 | Enable persistence using PVC                                                  | `false`                                                      |
-| `persistence.enc.accessMode`              | PVC Access Mode                                                               | `ReadWriteOnce`                                              |
-| `persistence.enc.size`                    | PVC Storage Request                                                           | `100Mi`                                                      |
-| `persistence.enc.claimName`               | PVC Storage Name                                                              | `alertscripts`                                               |
-| `persistence.mibs.enabled`                | Enable persistence using PVC                                                  | `false`                                                      |
-| `persistence.mibs.accessMode`             | PVC Access Mode                                                               | `ReadWriteOnce`                                              |
-| `persistence.mibs.size`                   | PVC Storage Request                                                           | `100Mi`                                                      |
-| `persistence.mibs.claimName`              | PVC Storage Name                                                              | `alertscripts`                                               |
-| `persistence.modules.enabled`             | Enable persistence using PVC                                                  | `false`                                                      |
-| `persistence.modules.accessMode`          | PVC Access Mode                                                               | `ReadWriteOnce`                                              |
-| `persistence.modules.size`                | PVC Storage Request                                                           | `100Mi`                                                      |
-| `persistence.modules.claimName`           | PVC Storage Name                                                              | `alertscripts`                                               |
-| `persistence.snmptraps.enabled`           | Enable persistence using PVC                                                  | `false`                                                      |
-| `persistence.snmptraps.accessMode`        | PVC Access Mode                                                               | `ReadWriteOnce`                                              |
-| `persistence.snmptraps.size`              | PVC Storage Request                                                           | `100Mi`                                                      |
-| `persistence.snmptraps.claimName`         | PVC Storage Name                                                              | `alertscripts`                                               |
-| `persistence.ssh_keys.enabled`            | Enable persistence using PVC                                                  | `false`                                                      |
-| `persistence.ssh_keys.accessMode`         | PVC Access Mode                                                               | `ReadWriteOnce`                                              |
-| `persistence.ssh_keys.size`               | PVC Storage Request                                                           | `100Mi`                                                      |
-| `persistence.ssh_keys.claimName`          | PVC Storage Name                                                              | `alertscripts`                                               |
-| `persistence.ssl.certs.enabled`           | Enable persistence using PVC                                                  | `false`                                                      |
-| `persistence.ssl.certs.accessMode`        | PVC Access Mode                                                               | `ReadWriteOnce`                                              |
-| `persistence.ssl.certs.size`              | PVC Storage Request                                                           | `100Mi`                                                      |
-| `persistence.ssl.certs.claimName`         | PVC Storage Name                                                              | `alertscripts`                                               |
-| `persistence.ssl.keys.enabled`            | Enable persistence using PVC                                                  | `false`                                                      |
-| `persistence.ssl.keys.accessMode`         | PVC Access Mode                                                               | `ReadWriteOnce`                                              |
-| `persistence.ssl.keys.size`               | PVC Storage Request                                                           | `100Mi`                                                      |
-| `persistence.ssl.keys.claimName`          | PVC Storage Name                                                              | `alertscripts`                                               |
-| `persistence.ssl.ssl_ca.enabled`          | Enable persistence using PVC                                                  | `false`                                                      |
-| `persistence.ssl.ssl_ca.accessMode`       | PVC Access Mode                                                               | `ReadWriteOnce`                                              |
-| `persistence.ssl.ssl_ca.size`             | PVC Storage Request                                                           | `100Mi`                                                      |
-| `persistence.ssl.ssl_ca.claimName`        | PVC Storage Name                                                              | `alertscripts`                                               |
-| `persistence.userscripts.enabled`         | Enable persistence using PVC                                                  | `false`                                                      |
-| `persistence.userscripts.accessMode`      | PVC Access Mode                                                               | `ReadWriteOnce`                                              |
-| `persistence.userscripts.size`            | PVC Storage Request                                                           | `100Mi`                                                      |
-| `persistence.userscripts.claimName`       | PVC Storage Name                                                              | `alertscripts`                                               |
+| `persistence.enabled`                     | Enable persistence using PVC                                                  | `false`                                                      |
+| `persistence.accessMode`                  | PVC Access Mode                                                               | `ReadWriteOnce`                                              |
+| `persistence.size`                        | PVC Storage Request                                                           | `100Mi`                                                      |
+| `persistence.claimName`                   | PVC Storage Name                                                              | `alertscripts`                                               |
 | `nodeSelector`                            | Node labels for pod assignment                                                | `{}`                                                         |
 | `tolerations`                             | List of node taints to tolerate                                               | `[]`                                                         |
 | `affinity`                                | Map of node/pod affinities                                                    | `{}`                                                         |
+| `initContainers`                          | List of init containers (take a look to examples in values.yaml)              | `[]`                                                         |
 | `podAnnotations`                          | Pod annotations                                                               | `{}`                                                         |
 | `updateStrategy`                          | Set up update strategy                                                        | `RollingUpdate` for web and `Recreate` for server            |
 | `zabbix_vars`                             | Variables in lowercase passed to deployments in uppercase                     | Default zabbix variables                                     |
@@ -220,13 +187,6 @@ server-mysql-chart \
   --set ingress.tls[0].secretName=zabbix-example-org-es-tls
 ```
 
-### Migration from 0.1.x version of this chart
+### initContainers
 
-The mariadb dependency has changed to bitnami chart. Mariadb statefulset cannot be updated so run before upgrade to 1.x.x version of this chart:
-```
-kubectl delete statefulset zabbix-mariadb
-```
-
-Then, upgrade chart as usual and mariadb statefulset will be recreated.
-
-Take a look to the changes: https://github.com/elmanytas/zabbix-kubernetes/commit/75e229406086dda56a1c752b88f44662dbb07692
+Now you can add initContainers to do some tasks like fix permissions. Take a look to initContainers examples in `values.yaml` .

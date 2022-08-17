@@ -154,62 +154,24 @@ persistence:
   ##
   # storageClass: "-"
   ##
-  alertscripts:
-    enabled: false
-    accessMode: ReadWriteOnce
-    size: 100Mi
-    claimName: alertscripts
-  externalscripts:
-    enabled: false
-    accessMode: ReadWriteOnce
-    size: 100Mi
-    claimName: externalscripts
-  enc:
-    enabled: false
-    accessMode: ReadWriteOnce
-    size: 100Mi
-    claimName: enc
-  mibs:
-    enabled: false
-    accessMode: ReadWriteOnce
-    size: 100Mi
-    claimName: mibs
-  modules:
-    enabled: false
-    accessMode: ReadWriteOnce
-    size: 100Mi
-    claimName: modules
-  snmptraps:
-    enabled: false
-    accessMode: ReadWriteOnce
-    size: 100Mi
-    claimName: snmptraps
-  ssh_keys:
-    enabled: false
-    accessMode: ReadWriteOnce
-    size: 100Mi
-    claimName: ssh-keys
-  ssl:
-    certs:
-      enabled: false
-      accessMode: ReadWriteOnce
-      size: 100Mi
-      claimName: ssl-certs
-    keys:
-      enabled: false
-      accessMode: ReadWriteOnce
-      size: 100Mi
-      claimName: ssl-keys
-    ssl_ca:
-      enabled: false
-      accessMode: ReadWriteOnce
-      size: 100Mi
-      claimName: ssl-ssl-ca
-  userscripts:
-    enabled: false
-    accessMode: ReadWriteOnce
-    size: 200Mi
-    claimName: userscripts
+  
+  ## Persistence is shared for all zabbix server volumes using directories in the same volume.
+  ## This includes:
+  ## - /var/lib/zabbix/alertscripts
+  ## - /var/lib/zabbix/externalscripts
+  ## - /var/lib/zabbix/enc
+  ## - /var/lib/zabbix/mibs
+  ## - /var/lib/zabbix/modules
+  ## - /var/lib/zabbix/snmptraps
+  ## - /var/lib/zabbix/ssh_keys
+  ## - /var/lib/zabbix/ssl/certs
+  ## - /var/lib/zabbix/ssl/keys
+  ## - /var/lib/zabbix/ssl/ssl_ca
+  ## - /var/lib/zabbix/userscripts
+  enabled: false
+  size: 100Mi
+  claimName: zabbix
+  accessMode: ReadWriteOnce
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -233,6 +195,44 @@ tolerations: []
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ##
 affinity: {}
+
+## @param initContainers Add additional init containers for the zabbix-server-mysql pod
+##
+## Example to allow zabbix user writing rights:
+##
+## initContainers:
+## - name: fix-permissions
+##   image: zabbix/zabbix-server-mysql:ubuntu-6.2-latest
+##   securityContext:
+##     runAsUser: 0
+##   volumeMounts:
+##     - mountPath: /zabbix-volume
+##       name: zabbix
+##   command:
+##     - bash
+##     - -c
+##     - |
+##       chown -R zabbix:zabbix /zabbix-volume/*
+##
+##
+## Example to download static curl to userscripts directory where zabbix can run scripts that can be triggered by actions:
+##
+## initContainers:
+## - name: download-static-curl
+##   image: zabbix/zabbix-server-mysql:ubuntu-6.2-latest
+##   securityContext:
+##     runAsUser: 0
+##   volumeMounts:
+##     - mountPath: /zabbix-volume
+##       name: zabbix
+##   command:
+##     - bash
+##     - -c
+##     - |
+##       wget -c https://github.com/moparisthebest/static-curl/releases/latest/download/curl-amd64 -O /zabbix-volume/userscripts/curl
+##       chmod +x /zabbix-volume/userscripts/curl
+  
+initContainers: []
 
 ## Pod annotations
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
